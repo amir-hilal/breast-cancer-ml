@@ -4,6 +4,7 @@ Logistic Regression model training
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
+
 from utils.config import LOGISTIC_REGRESSION_PARAMS
 
 

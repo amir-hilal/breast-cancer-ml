@@ -4,16 +4,17 @@ Loads the trained model pipeline and exposes REST API endpoints
 """
 import os
 import sys
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import List
-from contextlib import asynccontextmanager
+
 import joblib
+import mlflow.sklearn
 import numpy as np
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-import mlflow.sklearn
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))

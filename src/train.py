@@ -2,48 +2,49 @@
 MLflow-Integrated Training Pipeline for Breast Cancer Detection
 Logs all experiments, metrics, artifacts, and data versions
 """
-import os
-import sys
-import json
-import hashlib
 import argparse
-from pathlib import Path
-from datetime import datetime
-import warnings
+import hashlib
+import json
+import os
 import shutil
+import sys
+import warnings
+from datetime import datetime
+from pathlib import Path
 
-import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 import mlflow
 import mlflow.sklearn
+import numpy as np
+import pandas as pd
+import seaborn as sns
 from sklearn.metrics import (
     accuracy_score,
+    classification_report,
+    confusion_matrix,
+    f1_score,
     precision_score,
     recall_score,
-    f1_score,
     roc_auc_score,
-    confusion_matrix,
-    classification_report,
 )
 
-# Import project utilities
-from utils.load_data import load_data, drop_unnecessary_columns
-from utils.preprocess import encode_target, split_features_target, split_train_test
-from utils.evaluate import perform_cross_validation
 from training_models.train_logistic_regression import create_logistic_regression_model
 from utils.config import (
-    RANDOM_STATE,
-    TEST_SIZE,
-    LOGISTIC_REGRESSION_PARAMS,
     DATASET_PATH,
-    MODEL_PROMOTION_THRESHOLDS,
+    LATEST_MODEL_DIR,
+    LOGISTIC_REGRESSION_PARAMS,
     MLFLOW_EXPERIMENT_NAME,
     MLFLOW_TRACKING_URI,
-    LATEST_MODEL_DIR,
+    MODEL_PROMOTION_THRESHOLDS,
     PROJECT_ROOT,
+    RANDOM_STATE,
+    TEST_SIZE,
 )
+from utils.evaluate import perform_cross_validation
+
+# Import project utilities
+from utils.load_data import drop_unnecessary_columns, load_data
+from utils.preprocess import encode_target, split_features_target, split_train_test
 
 warnings.filterwarnings("ignore")
 

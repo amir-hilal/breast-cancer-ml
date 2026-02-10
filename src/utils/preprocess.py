@@ -4,7 +4,8 @@ Data preprocessing functionality
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from utils.config import TARGET_COLUMN, CLASS_LABELS, TEST_SIZE, RANDOM_STATE
+
+from utils.config import CLASS_LABELS, RANDOM_STATE, TARGET_COLUMN, TEST_SIZE
 
 
 def encode_target(df):

@@ -2,6 +2,7 @@
 Random Forest model training
 """
 from sklearn.ensemble import RandomForestClassifier
+
 from utils.config import RANDOM_STATE
 
 # Random Forest parameters

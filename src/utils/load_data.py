@@ -2,9 +2,11 @@
 Data loading functionality
 """
 import os
-import pandas as pd
 from pathlib import Path
-from utils.config import DATASET_PATH, COLUMNS_TO_DROP, TARGET_COLUMN, KAGGLE_DATASET, PROJECT_ROOT
+
+import pandas as pd
+
+from utils.config import COLUMNS_TO_DROP, DATASET_PATH, KAGGLE_DATASET, PROJECT_ROOT, TARGET_COLUMN
 
 
 def load_data():

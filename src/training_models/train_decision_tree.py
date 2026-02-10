@@ -2,6 +2,7 @@
 Decision Tree model training
 """
 from sklearn.tree import DecisionTreeClassifier
+
 from utils.config import DECISION_TREE_PARAMS
 
 

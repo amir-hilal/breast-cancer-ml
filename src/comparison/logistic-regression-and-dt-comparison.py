@@ -1,8 +1,8 @@
 """
 Comparison between Logistic Regression and Decision Tree
 """
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Add parent directory to path for imports
@@ -11,18 +11,18 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-# Import data loading functions
-from utils.load_data import load_data, drop_unnecessary_columns, display_data_info
-
-# Import preprocessing functions
-from utils.preprocess import encode_target, split_features_target, split_train_test
-
 # Import model training functions
 from training_models.train_decision_tree import create_decision_tree_pipeline, train_decision_tree
 from training_models.train_logistic_regression import create_logistic_regression_model, train_logistic_regression
 
 # Import evaluation functions
-from utils.evaluate import evaluate_model, compare_models
+from utils.evaluate import compare_models, evaluate_model
+
+# Import data loading functions
+from utils.load_data import display_data_info, drop_unnecessary_columns, load_data
+
+# Import preprocessing functions
+from utils.preprocess import encode_target, split_features_target, split_train_test
 
 
 def main():

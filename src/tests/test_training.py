@@ -1,16 +1,17 @@
 """
 Unit tests for training pipeline
 """
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from utils.load_data import load_data, drop_unnecessary_columns
-from utils.preprocess import encode_target, split_features_target
 from training_models.train_logistic_regression import create_logistic_regression_model
+from utils.load_data import drop_unnecessary_columns, load_data
+from utils.preprocess import encode_target, split_features_target
 
 
 def test_load_data():
@@ -63,6 +64,7 @@ def test_create_model():
 def test_model_training_smoke():
     """Smoke test for model training"""
     from sklearn.model_selection import train_test_split
+
     from utils.config import RANDOM_STATE
 
     # Load and prepare data
