@@ -1,14 +1,19 @@
 """
 Data loading functionality
 """
+import os
 import pandas as pd
 from pathlib import Path
-from utils.config import DATASET_PATH, COLUMNS_TO_DROP, TARGET_COLUMN, KAGGLE_DATASET
+from utils.config import DATASET_PATH, COLUMNS_TO_DROP, TARGET_COLUMN, KAGGLE_DATASET, PROJECT_ROOT
+
 
 def load_data():
     """
     Load the breast cancer dataset from CSV file
-    If local file doesn't exist, downloads from Kaggle automatically
+    Supports multiple sources:
+    1. Local file path
+    2. AWS S3 (s3://bucket/path/to/file.csv)
+    3. Kaggle auto-download
 
     Returns:
         pd.DataFrame: Loaded dataset
@@ -17,8 +22,13 @@ def load_data():
     print("LOADING DATA")
     print("=" * 60)
 
+    # Check for S3 URI (for CI/CD and production)
+    s3_uri = os.environ.get('DATASET_S3_URI', '')
+    if s3_uri.startswith('s3://'):
+        return _load_from_s3(s3_uri)
+    
     dataset_path = Path(DATASET_PATH)
-
+    
     # Try to load from local path first
     if dataset_path.exists():
         print(f"Loading from: {dataset_path}")
@@ -26,48 +36,129 @@ def load_data():
         print(f"Dataset loaded successfully!")
         print(f"Shape: {df.shape[0]} rows, {df.shape[1]} columns")
         return df
-
+    
     # Dataset not found - attempt to download from Kaggle
     print(f"⚠️  Dataset not found at {dataset_path}")
     print(f"Attempting to download from Kaggle: {KAGGLE_DATASET}")
-
+    
     try:
         import kagglehub
-
-        # Download dataset from Kaggle
-        download_path = kagglehub.dataset_download(KAGGLE_DATASET)
+        
+        # Download dataset from Kaggle (correct API)
+        download_path = kagglehub.dataset_download(KAGGLE_DATASET, force_download=False)
         print(f"✓ Dataset downloaded to: {download_path}")
-
+        
         # Find CSV file in downloaded directory
-        csv_files = list(Path(download_path).glob('*.csv'))
+        csv_files = list(Path(download_path).glob('**/*.csv'))
         if not csv_files:
             raise FileNotFoundError(f"No CSV files found in {download_path}")
-
+        
         csv_path = csv_files[0]
         print(f"Using: {csv_path.name}")
-
+        
         df = pd.read_csv(csv_path)
         print(f"Dataset loaded successfully!")
         print(f"Shape: {df.shape[0]} rows, {df.shape[1]} columns")
-
-        # Optional: Update config for future runs
-        print(f"\n💡 Tip: Update DATASET_PATH in config.py to:")
-        print(f"   {csv_path}")
-
+        
         return df
-
+        
     except ImportError:
         raise RuntimeError(
             "\n❌ Dataset not found and 'kagglehub' is not installed.\n"
             "   Install it with: pip install kagglehub\n"
+            f"   Or set DATASET_S3_URI environment variable\n"
+            f"   Or download manually from: https://www.kaggle.com/datasets/{KAGGLE_DATASET}"
+        )
+    except AttributeError as e:
+        # Fallback for older kagglehub versions
+        raise RuntimeError(
+            f"\n❌ kagglehub API error: {str(e)}\n"
+            "   Solution: Set DATASET_S3_URI environment variable to S3 path\n"
+            f"   Example: export DATASET_S3_URI=s3://your-bucket/breast-cancer.csv\n"
             f"   Or download manually from: https://www.kaggle.com/datasets/{KAGGLE_DATASET}"
         )
     except Exception as e:
         raise RuntimeError(
             f"\n❌ Failed to download dataset: {str(e)}\n"
-            f"   Please download manually from: https://www.kaggle.com/datasets/{KAGGLE_DATASET}\n"
-            "   Then update DATASET_PATH in config.py with the correct path."
+            "   Solution: Set DATASET_S3_URI environment variable\n"
+            f"   Or download manually from: https://www.kaggle.com/datasets/{KAGGLE_DATASET}"
         )
+
+
+def _load_from_s3(s3_uri):
+    """
+    Load dataset from AWS S3
+    
+    Args:
+        s3_uri: S3 URI (e.g., s3://bucket/path/to/file.csv)
+    
+    Returns:
+        pd.DataFrame: Loaded dataset
+    """
+    print(f"Loading from S3: {s3_uri}")
+    
+    try:
+        import boto3
+        from botocore.exceptions import ClientError, NoCredentialsError
+        
+        # Parse S3 URI
+        parts = s3_uri.replace('s3://', '').split('/', 1)
+        bucket = parts[0]
+        key = parts[1] if len(parts) > 1 else ''
+        
+        if not key:
+            raise ValueError(f"Invalid S3 URI: {s3_uri}")
+        
+        # Download from S3
+        s3_client = boto3.client('s3')
+        
+        # Create local data directory
+        data_dir = PROJECT_ROOT / 'data'
+        data_dir.mkdir(exist_ok=True)
+        
+        local_path = data_dir / Path(key).name
+        
+        print(f"Downloading from bucket '{bucket}', key '{key}'...")
+        s3_client.download_file(bucket, key, str(local_path))
+        print(f"✓ Downloaded to: {local_path}")
+        
+        # Load CSV
+        df = pd.read_csv(local_path)
+        print(f"Dataset loaded successfully!")
+        print(f"Shape: {df.shape[0]} rows, {df.shape[1]} columns")
+        
+        return df
+        
+    except ImportError:
+        raise RuntimeError(
+            "\n❌ boto3 is not installed.\n"
+            "   Install it with: pip install boto3"
+        )
+    except NoCredentialsError:
+        raise RuntimeError(
+            "\n❌ AWS credentials not found.\n"
+            "   Configure AWS CLI or set environment variables:\n"
+            "   - AWS_ACCESS_KEY_ID\n"
+            "   - AWS_SECRET_ACCESS_KEY\n"
+            "   - AWS_REGION"
+        )
+    except ClientError as e:
+        error_code = e.response['Error']['Code']
+        if error_code == '404':
+            raise RuntimeError(
+                f"\n❌ Dataset not found in S3: {s3_uri}\n"
+                "   Please verify the bucket and key are correct."
+            )
+        elif error_code == '403':
+            raise RuntimeError(
+                f"\n❌ Access denied to S3: {s3_uri}\n"
+                "   Please check IAM permissions."
+            )
+        else:
+            raise RuntimeError(f"\n❌ S3 error: {str(e)}")
+    except Exception as e:
+        raise RuntimeError(f"\n❌ Failed to load from S3: {str(e)}")
+
 
 def drop_unnecessary_columns(df):
     """

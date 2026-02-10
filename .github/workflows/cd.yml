@@ -40,6 +40,10 @@ jobs:
           python train.py --k-folds 10
         env:
           MLFLOW_TRACKING_URI: file:./mlruns
+          DATASET_S3_URI: ${{ secrets.DATASET_S3_URI }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ env.AWS_REGION }}
 
       - name: Check model promotion status
         id: check_promotion

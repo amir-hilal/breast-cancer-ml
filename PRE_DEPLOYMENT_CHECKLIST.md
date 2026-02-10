@@ -82,6 +82,22 @@ Complete this checklist **before** pushing to GitHub to ensure smooth CI/CD depl
 
 ---
 
+## ✅ S3 Dataset Setup (Recommended for CI/CD)
+
+### Dataset uploaded to S3:
+- [ ] S3 bucket created (e.g., `your-ml-datasets`)
+- [ ] Dataset uploaded to S3 (e.g., `s3://your-ml-datasets/datasets/breast-cancer.csv`)
+- [ ] IAM permissions configured for S3 read access
+- [ ] S3 URI tested locally (optional)
+
+**See [S3_DATASET_SETUP.md](S3_DATASET_SETUP.md) for detailed instructions**
+
+### Alternative: Kaggle Download
+- [ ] If not using S3, ensure `kagglehub` package is in requirements.txt
+- [ ] Test that Kaggle auto-download works in CI/CD
+
+---
+
 ## ✅ GitHub Secrets Configured
 
 Navigate to: **Repository → Settings → Secrets and variables → Actions**
@@ -95,8 +111,9 @@ All secrets added:
 - [ ] `ECS_CLUSTER` (e.g., `ml-api-cluster`)
 - [ ] `ECS_SERVICE` (e.g., `breast-cancer-api-service`)
 - [ ] `ECS_TASK_DEFINITION` (e.g., `breast-cancer-api-task`)
+- [ ] `DATASET_S3_URI` (e.g., `s3://your-ml-datasets/datasets/breast-cancer.csv`)
 
-**Total: 8 secrets required**
+**Total: 9 secrets required**
 
 ---
 

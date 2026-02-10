@@ -1,19 +1,54 @@
 # Dataset Configuration Guide
 
-This project uses the **Wisconsin Breast Cancer Dataset** from Kaggle. The dataset loading is now **flexible and automatic**!
+This project uses the **Wisconsin Breast Cancer Dataset** from Kaggle. The dataset loading is **flexible and supports multiple sources**!
 
-## 🎯 How It Works
+## 🎯 Supported Data Sources
 
-The `load_data()` function will:
-1. ✅ Try to load from your local path (if exists)
-2. ✅ Auto-download from Kaggle (if not found)
-3. ✅ Cache for future use
-
-**You don't need to manually download anything!** Just run the training and it will download automatically on first run.
+1. **AWS S3** (⭐ Recommended for CI/CD) - Store dataset in S3 bucket
+2. **Local File** - Use file from your computer
+3. **Kaggle Auto-Download** - Automatic fallback for local development
 
 ---
 
-## 📁 Option 1: Automatic Download (Recommended)
+## 📁 Option 1: AWS S3 (Recommended for Production/CI/CD)
+
+**Best for**: GitHub Actions, Docker, AWS deployments
+
+### Why S3?
+✅ No CSV files in Git repository  
+✅ Fast downloads in CI/CD  
+✅ Version control for datasets  
+✅ Same source for training and deployment  
+✅ Cost: ~$0.01/month  
+
+### Quick Setup
+
+See **[S3_DATASET_SETUP.md](S3_DATASET_SETUP.md)** for complete guide.
+
+**Summary**:
+1. Create S3 bucket: `your-ml-datasets`
+2. Upload dataset: `s3://your-ml-datasets/datasets/breast-cancer.csv`
+3. Add GitHub secret: `DATASET_S3_URI`
+4. Done! CI/CD will use S3 automatically
+
+### Usage
+
+**In GitHub Actions** (automatic):
+```yaml
+env:
+  DATASET_S3_URI: ${{ secrets.DATASET_S3_URI }}
+```
+
+**Local development**:
+```powershell
+$env:DATASET_S3_URI = "s3://your-ml-datasets/datasets/breast-cancer.csv"
+cd src
+python train.py
+```
+
+---
+
+## 📁 Option 2: Automatic Download (Local Development)
 
 Just run the training - the dataset will download automatically:
 

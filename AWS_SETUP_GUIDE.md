@@ -214,8 +214,16 @@ Name: ECS_TASK_DEFINITION
 Secret: breast-cancer-api-task
 ```
 
+#### Dataset Configuration (S3)
+```yaml
+Name: DATASET_S3_URI
+Secret: s3://your-ml-datasets/datasets/breast-cancer.csv
+```
+
+**Note**: See [S3_DATASET_SETUP.md](S3_DATASET_SETUP.md) for detailed S3 setup instructions.
+
 ### 4.3 Verify All Secrets
-You should have **8 secrets** total:
+You should have **9 secrets** total:
 - ✅ AWS_ACCESS_KEY_ID
 - ✅ AWS_SECRET_ACCESS_KEY
 - ✅ AWS_REGION
@@ -224,6 +232,7 @@ You should have **8 secrets** total:
 - ✅ ECS_CLUSTER
 - ✅ ECS_SERVICE
 - ✅ ECS_TASK_DEFINITION
+- ✅ DATASET_S3_URI
 
 ---
 
