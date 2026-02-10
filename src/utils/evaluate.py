@@ -5,6 +5,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.model_selection import cross_validate
 
+
 def evaluate_model(pipeline, X_test, y_test, model_name):
     """
     Evaluate a trained model on test data
@@ -48,18 +49,18 @@ def evaluate_model(pipeline, X_test, y_test, model_name):
 
     # Classification Report
     print(f"\nClassification Report:")
-    print(classification_report(y_test, y_pred,
-                                target_names=['Benign (0)', 'Malignant (1)']))
+    print(classification_report(y_test, y_pred, target_names=["Benign (0)", "Malignant (1)"]))
 
     # Return metrics dictionary
     return {
-        'model_name': model_name,
-        'accuracy': accuracy,
-        'precision': precision,
-        'recall': recall,
-        'f1_score': f1,
-        'confusion_matrix': cm
+        "model_name": model_name,
+        "accuracy": accuracy,
+        "precision": precision,
+        "recall": recall,
+        "f1_score": f1,
+        "confusion_matrix": cm,
     }
+
 
 def compare_models(results_list):
     """
@@ -76,26 +77,29 @@ def compare_models(results_list):
     print("-" * 73)
 
     for result in results_list:
-        print(f"{result['model_name']:<25} "
-              f"{result['accuracy']:<12.4f} "
-              f"{result['precision']:<12.4f} "
-              f"{result['recall']:<12.4f} "
-              f"{result['f1_score']:<12.4f}")
+        print(
+            f"{result['model_name']:<25} "
+            f"{result['accuracy']:<12.4f} "
+            f"{result['precision']:<12.4f} "
+            f"{result['recall']:<12.4f} "
+            f"{result['f1_score']:<12.4f}"
+        )
 
     # Find best model for each metric
     print("\n" + "=" * 60)
     print("BEST PERFORMING MODEL PER METRIC")
     print("=" * 60)
 
-    best_accuracy = max(results_list, key=lambda x: x['accuracy'])
-    best_precision = max(results_list, key=lambda x: x['precision'])
-    best_recall = max(results_list, key=lambda x: x['recall'])
-    best_f1 = max(results_list, key=lambda x: x['f1_score'])
+    best_accuracy = max(results_list, key=lambda x: x["accuracy"])
+    best_precision = max(results_list, key=lambda x: x["precision"])
+    best_recall = max(results_list, key=lambda x: x["recall"])
+    best_f1 = max(results_list, key=lambda x: x["f1_score"])
 
     print(f"Best Accuracy:  {best_accuracy['model_name']} ({best_accuracy['accuracy']:.4f})")
     print(f"Best Precision: {best_precision['model_name']} ({best_precision['precision']:.4f})")
     print(f"Best Recall:    {best_recall['model_name']} ({best_recall['recall']:.4f})")
     print(f"Best F1-Score:  {best_f1['model_name']} ({best_f1['f1_score']:.4f})")
+
 
 def perform_cross_validation(model, X, y, model_name, cv=10):
     """
@@ -116,28 +120,23 @@ def perform_cross_validation(model, X, y, model_name, cv=10):
     print("=" * 60)
 
     # Define scoring metrics
-    scoring = {
-        'accuracy': 'accuracy',
-        'precision': 'precision',
-        'recall': 'recall',
-        'f1': 'f1'
-    }
+    scoring = {"accuracy": "accuracy", "precision": "precision", "recall": "recall", "f1": "f1"}
 
     print(f"Performing {cv}-fold cross-validation...")
     cv_results = cross_validate(model, X, y, cv=cv, scoring=scoring, n_jobs=-1)
 
     # Calculate mean and std for each metric
-    accuracy_mean = cv_results['test_accuracy'].mean()
-    accuracy_std = cv_results['test_accuracy'].std()
+    accuracy_mean = cv_results["test_accuracy"].mean()
+    accuracy_std = cv_results["test_accuracy"].std()
 
-    precision_mean = cv_results['test_precision'].mean()
-    precision_std = cv_results['test_precision'].std()
+    precision_mean = cv_results["test_precision"].mean()
+    precision_std = cv_results["test_precision"].std()
 
-    recall_mean = cv_results['test_recall'].mean()
-    recall_std = cv_results['test_recall'].std()
+    recall_mean = cv_results["test_recall"].mean()
+    recall_std = cv_results["test_recall"].std()
 
-    f1_mean = cv_results['test_f1'].mean()
-    f1_std = cv_results['test_f1'].std()
+    f1_mean = cv_results["test_f1"].mean()
+    f1_std = cv_results["test_f1"].std()
 
     # Display results
     print(f"\nCross-Validation Results ({cv} folds):")
@@ -147,13 +146,13 @@ def perform_cross_validation(model, X, y, model_name, cv=10):
     print(f"  F1-Score:  {f1_mean:.4f} (+/- {f1_std:.4f})")
 
     return {
-        'model_name': model_name,
-        'accuracy_mean': accuracy_mean,
-        'accuracy_std': accuracy_std,
-        'precision_mean': precision_mean,
-        'precision_std': precision_std,
-        'recall_mean': recall_mean,
-        'recall_std': recall_std,
-        'f1_mean': f1_mean,
-        'f1_std': f1_std
+        "model_name": model_name,
+        "accuracy_mean": accuracy_mean,
+        "accuracy_std": accuracy_std,
+        "precision_mean": precision_mean,
+        "precision_std": precision_std,
+        "recall_mean": recall_mean,
+        "recall_std": recall_std,
+        "f1_mean": f1_mean,
+        "f1_std": f1_std,
     }

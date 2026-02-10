@@ -19,8 +19,13 @@ import seaborn as sns
 import mlflow
 import mlflow.sklearn
 from sklearn.metrics import (
-    accuracy_score, precision_score, recall_score, f1_score,
-    roc_auc_score, confusion_matrix, classification_report
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    roc_auc_score,
+    confusion_matrix,
+    classification_report,
 )
 
 # Import project utilities
@@ -29,12 +34,18 @@ from utils.preprocess import encode_target, split_features_target, split_train_t
 from utils.evaluate import perform_cross_validation
 from training_models.train_logistic_regression import create_logistic_regression_model
 from utils.config import (
-    RANDOM_STATE, TEST_SIZE, LOGISTIC_REGRESSION_PARAMS,
-    DATASET_PATH, MODEL_PROMOTION_THRESHOLDS, MLFLOW_EXPERIMENT_NAME,
-    MLFLOW_TRACKING_URI, LATEST_MODEL_DIR, PROJECT_ROOT
+    RANDOM_STATE,
+    TEST_SIZE,
+    LOGISTIC_REGRESSION_PARAMS,
+    DATASET_PATH,
+    MODEL_PROMOTION_THRESHOLDS,
+    MLFLOW_EXPERIMENT_NAME,
+    MLFLOW_TRACKING_URI,
+    LATEST_MODEL_DIR,
+    PROJECT_ROOT,
 )
 
-warnings.filterwarnings('ignore')
+warnings.filterwarnings("ignore")
 
 
 def compute_data_hash(file_path):
@@ -67,12 +78,12 @@ def save_confusion_matrix(y_true, y_pred, output_path):
     cm = confusion_matrix(y_true, y_pred)
 
     plt.figure(figsize=(8, 6))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
-                xticklabels=['Benign', 'Malignant'],
-                yticklabels=['Benign', 'Malignant'])
-    plt.title('Confusion Matrix')
-    plt.ylabel('True Label')
-    plt.xlabel('Predicted Label')
+    sns.heatmap(
+        cm, annot=True, fmt="d", cmap="Blues", xticklabels=["Benign", "Malignant"], yticklabels=["Benign", "Malignant"]
+    )
+    plt.title("Confusion Matrix")
+    plt.ylabel("True Label")
+    plt.xlabel("Predicted Label")
     plt.tight_layout()
     plt.savefig(output_path, dpi=150)
     plt.close()
@@ -88,13 +99,9 @@ def save_classification_report(y_true, y_pred, output_path):
         y_pred: Predicted labels
         output_path: Path to save report
     """
-    report = classification_report(
-        y_true, y_pred,
-        target_names=['Benign (0)', 'Malignant (1)'],
-        digits=4
-    )
+    report = classification_report(y_true, y_pred, target_names=["Benign (0)", "Malignant (1)"], digits=4)
 
-    with open(output_path, 'w') as f:
+    with open(output_path, "w") as f:
         f.write("Classification Report\n")
         f.write("=" * 60 + "\n\n")
         f.write(report)
@@ -113,14 +120,14 @@ def save_run_summary(metrics, cv_scores, params, output_path):
         output_path: Path to save JSON
     """
     summary = {
-        'timestamp': datetime.now().isoformat(),
-        'parameters': params,
-        'cv_metrics': cv_scores,
-        'test_metrics': metrics,
-        'meets_promotion_criteria': check_promotion_criteria(cv_scores)
+        "timestamp": datetime.now().isoformat(),
+        "parameters": params,
+        "cv_metrics": cv_scores,
+        "test_metrics": metrics,
+        "meets_promotion_criteria": check_promotion_criteria(cv_scores),
     }
 
-    with open(output_path, 'w') as f:
+    with open(output_path, "w") as f:
         json.dump(summary, f, indent=2)
 
     print(f"Run summary saved to {output_path}")
@@ -136,19 +143,23 @@ def check_promotion_criteria(cv_scores):
     Returns:
         bool: True if meets all criteria
     """
-    recall_mean = float(cv_scores.get('recall_mean', 0))
-    recall_std = float(cv_scores.get('recall_std', 1))
+    recall_mean = float(cv_scores.get("recall_mean", 0))
+    recall_std = float(cv_scores.get("recall_std", 1))
 
     thresholds = MODEL_PROMOTION_THRESHOLDS
 
-    meets_recall = recall_mean >= thresholds['min_recall']
-    meets_stability = recall_std <= thresholds['max_recall_std']
+    meets_recall = recall_mean >= thresholds["min_recall"]
+    meets_stability = recall_std <= thresholds["max_recall_std"]
 
     print("\n" + "=" * 60)
     print("MODEL PROMOTION CRITERIA")
     print("=" * 60)
-    print(f"Recall Mean:     {recall_mean:.4f} (threshold: {thresholds['min_recall']:.2f}) {'✓' if meets_recall else '✗'}")
-    print(f"Recall Std Dev:  {recall_std:.4f} (threshold: {thresholds['max_recall_std']:.2f}) {'✓' if meets_stability else '✗'}")
+    print(
+        f"Recall Mean:     {recall_mean:.4f} (threshold: {thresholds['min_recall']:.2f}) {'✓' if meets_recall else '✗'}"
+    )
+    print(
+        f"Recall Std Dev:  {recall_std:.4f} (threshold: {thresholds['max_recall_std']:.2f}) {'✓' if meets_stability else '✗'}"
+    )
     print(f"\nPromotion Status: {'APPROVED' if (meets_recall and meets_stability) else 'REJECTED'}")
     print("=" * 60)
 
@@ -190,7 +201,7 @@ def promote_model(run_id, artifacts_dir):
         raise
 
     # Copy other artifacts
-    for artifact in ['confusion_matrix.png', 'classification_report.txt', 'run_summary.json']:
+    for artifact in ["confusion_matrix.png", "classification_report.txt", "run_summary.json"]:
         src = Path(artifacts_dir) / artifact
         if src.exists():
             shutil.copy(src, latest_dir / artifact)
@@ -198,12 +209,12 @@ def promote_model(run_id, artifacts_dir):
 
     # Save promotion metadata
     metadata = {
-        'promoted_at': datetime.now().isoformat(),
-        'mlflow_run_id': run_id,
-        'artifacts_source': str(artifacts_dir)
+        "promoted_at": datetime.now().isoformat(),
+        "mlflow_run_id": run_id,
+        "artifacts_source": str(artifacts_dir),
     }
 
-    with open(latest_dir / 'promotion_metadata.json', 'w') as f:
+    with open(latest_dir / "promotion_metadata.json", "w") as f:
         json.dump(metadata, f, indent=2)
 
     print(f"\n✓ Model promoted successfully!")
@@ -260,6 +271,7 @@ def train_pipeline(k_folds=10, smoke_test=False):
         if smoke_test:
             print("\n⚠️  SMOKE TEST MODE: Using 20% of data")
             from sklearn.model_selection import train_test_split
+
             X, _, y, _ = train_test_split(X, y, train_size=0.2, random_state=RANDOM_STATE, stratify=y)
             mlflow.log_param("smoke_test", True)
         else:
@@ -301,14 +313,14 @@ def train_pipeline(k_folds=10, smoke_test=False):
         cv_results = perform_cross_validation(model, X_train, y_train, "Logistic Regression", cv=k_folds)
 
         # Log CV metrics
-        mlflow.log_metric("cv_accuracy_mean", cv_results['accuracy_mean'])
-        mlflow.log_metric("cv_accuracy_std", cv_results['accuracy_std'])
-        mlflow.log_metric("cv_precision_mean", cv_results['precision_mean'])
-        mlflow.log_metric("cv_precision_std", cv_results['precision_std'])
-        mlflow.log_metric("cv_recall_mean", cv_results['recall_mean'])
-        mlflow.log_metric("cv_recall_std", cv_results['recall_std'])
-        mlflow.log_metric("cv_f1_mean", cv_results['f1_mean'])
-        mlflow.log_metric("cv_f1_std", cv_results['f1_std'])
+        mlflow.log_metric("cv_accuracy_mean", cv_results["accuracy_mean"])
+        mlflow.log_metric("cv_accuracy_std", cv_results["accuracy_std"])
+        mlflow.log_metric("cv_precision_mean", cv_results["precision_mean"])
+        mlflow.log_metric("cv_precision_std", cv_results["precision_std"])
+        mlflow.log_metric("cv_recall_mean", cv_results["recall_mean"])
+        mlflow.log_metric("cv_recall_std", cv_results["recall_std"])
+        mlflow.log_metric("cv_f1_mean", cv_results["f1_mean"])
+        mlflow.log_metric("cv_f1_std", cv_results["f1_std"])
 
         # Step 4: Train final model on full training set
         print("\n" + "=" * 60)
@@ -349,11 +361,11 @@ def train_pipeline(k_folds=10, smoke_test=False):
         mlflow.log_metric("test_roc_auc", test_roc_auc)
 
         test_metrics = {
-            'accuracy': test_accuracy,
-            'precision': test_precision,
-            'recall': test_recall,
-            'f1': test_f1,
-            'roc_auc': test_roc_auc
+            "accuracy": test_accuracy,
+            "precision": test_precision,
+            "recall": test_recall,
+            "f1": test_f1,
+            "roc_auc": test_roc_auc,
         }
 
         # Step 6: Generate and log artifacts
@@ -377,9 +389,7 @@ def train_pipeline(k_folds=10, smoke_test=False):
 
         # Run summary JSON
         summary_path = artifacts_dir / "run_summary.json"
-        save_run_summary(test_metrics, cv_results,
-                        {**LOGISTIC_REGRESSION_PARAMS, 'k_folds': k_folds},
-                        summary_path)
+        save_run_summary(test_metrics, cv_results, {**LOGISTIC_REGRESSION_PARAMS, "k_folds": k_folds}, summary_path)
         mlflow.log_artifact(summary_path)
 
         # Step 7: Save model
@@ -425,11 +435,9 @@ def main():
     """
     Main entry point with CLI arguments
     """
-    parser = argparse.ArgumentParser(description='Train breast cancer detection model with MLflow')
-    parser.add_argument('--k-folds', type=int, default=10,
-                       help='Number of cross-validation folds (default: 10)')
-    parser.add_argument('--smoke', action='store_true',
-                       help='Run smoke test with subset of data')
+    parser = argparse.ArgumentParser(description="Train breast cancer detection model with MLflow")
+    parser.add_argument("--k-folds", type=int, default=10, help="Number of cross-validation folds (default: 10)")
+    parser.add_argument("--smoke", action="store_true", help="Run smoke test with subset of data")
 
     args = parser.parse_args()
 
@@ -445,6 +453,7 @@ def main():
     except Exception as e:
         print(f"\n❌ Training failed: {str(e)}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)  # Failure
 

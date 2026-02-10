@@ -23,8 +23,8 @@ def load_data():
     print("=" * 60)
 
     # Check for S3 URI (for CI/CD and production)
-    s3_uri = os.environ.get('DATASET_S3_URI', '')
-    if s3_uri.startswith('s3://'):
+    s3_uri = os.environ.get("DATASET_S3_URI", "")
+    if s3_uri.startswith("s3://"):
         return _load_from_s3(s3_uri)
 
     dataset_path = Path(DATASET_PATH)
@@ -49,7 +49,7 @@ def load_data():
         print(f"✓ Dataset downloaded to: {download_path}")
 
         # Find CSV file in downloaded directory
-        csv_files = list(Path(download_path).glob('**/*.csv'))
+        csv_files = list(Path(download_path).glob("**/*.csv"))
         if not csv_files:
             raise FileNotFoundError(f"No CSV files found in {download_path}")
 
@@ -102,18 +102,18 @@ def _load_from_s3(s3_uri):
         from botocore.exceptions import ClientError, NoCredentialsError
 
         # Parse S3 URI
-        parts = s3_uri.replace('s3://', '').split('/', 1)
+        parts = s3_uri.replace("s3://", "").split("/", 1)
         bucket = parts[0]
-        key = parts[1] if len(parts) > 1 else ''
+        key = parts[1] if len(parts) > 1 else ""
 
         if not key:
             raise ValueError(f"Invalid S3 URI: {s3_uri}")
 
         # Download from S3
-        s3_client = boto3.client('s3')
+        s3_client = boto3.client("s3")
 
         # Create local data directory
-        data_dir = PROJECT_ROOT / 'data'
+        data_dir = PROJECT_ROOT / "data"
         data_dir.mkdir(exist_ok=True)
 
         local_path = data_dir / Path(key).name
@@ -130,10 +130,7 @@ def _load_from_s3(s3_uri):
         return df, local_path
 
     except ImportError:
-        raise RuntimeError(
-            "\n❌ boto3 is not installed.\n"
-            "   Install it with: pip install boto3"
-        )
+        raise RuntimeError("\n❌ boto3 is not installed.\n" "   Install it with: pip install boto3")
     except NoCredentialsError:
         raise RuntimeError(
             "\n❌ AWS credentials not found.\n"
@@ -143,17 +140,13 @@ def _load_from_s3(s3_uri):
             "   - AWS_REGION"
         )
     except ClientError as e:
-        error_code = e.response['Error']['Code']
-        if error_code == '404':
+        error_code = e.response["Error"]["Code"]
+        if error_code == "404":
             raise RuntimeError(
-                f"\n❌ Dataset not found in S3: {s3_uri}\n"
-                "   Please verify the bucket and key are correct."
+                f"\n❌ Dataset not found in S3: {s3_uri}\n" "   Please verify the bucket and key are correct."
             )
-        elif error_code == '403':
-            raise RuntimeError(
-                f"\n❌ Access denied to S3: {s3_uri}\n"
-                "   Please check IAM permissions."
-            )
+        elif error_code == "403":
+            raise RuntimeError(f"\n❌ Access denied to S3: {s3_uri}\n" "   Please check IAM permissions.")
         else:
             raise RuntimeError(f"\n❌ S3 error: {str(e)}")
     except Exception as e:
@@ -171,10 +164,11 @@ def drop_unnecessary_columns(df):
         pd.DataFrame: Dataframe with unnecessary columns removed
     """
     print(f"\nDropping columns: {COLUMNS_TO_DROP}")
-    df = df.drop(columns=COLUMNS_TO_DROP, errors='ignore')
+    df = df.drop(columns=COLUMNS_TO_DROP, errors="ignore")
     print(f"New shape: {df.shape[0]} rows, {df.shape[1]} columns")
 
     return df
+
 
 def display_data_info(df):
     """

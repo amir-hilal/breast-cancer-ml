@@ -9,7 +9,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 import warnings
 import numpy as np
-warnings.filterwarnings('ignore')
+
+warnings.filterwarnings("ignore")
 
 # Import data loading functions
 from utils.load_data import load_data, drop_unnecessary_columns, display_data_info
@@ -23,6 +24,7 @@ from training_models.train_random_forest import create_random_forest_model, trai
 
 # Import evaluation functions
 from utils.evaluate import evaluate_model, compare_models, perform_cross_validation
+
 
 def compare_cv_results(results_list):
     """
@@ -39,26 +41,35 @@ def compare_cv_results(results_list):
     print("-" * 105)
 
     for result in results_list:
-        print(f"{result['model_name']:<25} "
-              f"{result['accuracy_mean']:.4f} ± {result['accuracy_std']:.4f}   "
-              f"{result['precision_mean']:.4f} ± {result['precision_std']:.4f}   "
-              f"{result['recall_mean']:.4f} ± {result['recall_std']:.4f}   "
-              f"{result['f1_mean']:.4f} ± {result['f1_std']:.4f}")
+        print(
+            f"{result['model_name']:<25} "
+            f"{result['accuracy_mean']:.4f} ± {result['accuracy_std']:.4f}   "
+            f"{result['precision_mean']:.4f} ± {result['precision_std']:.4f}   "
+            f"{result['recall_mean']:.4f} ± {result['recall_std']:.4f}   "
+            f"{result['f1_mean']:.4f} ± {result['f1_std']:.4f}"
+        )
 
     # Find best model for each metric
     print("\n" + "=" * 60)
     print("BEST PERFORMING MODEL PER METRIC (Mean Score)")
     print("=" * 60)
 
-    best_accuracy = max(results_list, key=lambda x: x['accuracy_mean'])
-    best_precision = max(results_list, key=lambda x: x['precision_mean'])
-    best_recall = max(results_list, key=lambda x: x['recall_mean'])
-    best_f1 = max(results_list, key=lambda x: x['f1_mean'])
+    best_accuracy = max(results_list, key=lambda x: x["accuracy_mean"])
+    best_precision = max(results_list, key=lambda x: x["precision_mean"])
+    best_recall = max(results_list, key=lambda x: x["recall_mean"])
+    best_f1 = max(results_list, key=lambda x: x["f1_mean"])
 
-    print(f"Best Accuracy:  {best_accuracy['model_name']} ({best_accuracy['accuracy_mean']:.4f} ± {best_accuracy['accuracy_std']:.4f})")
-    print(f"Best Precision: {best_precision['model_name']} ({best_precision['precision_mean']:.4f} ± {best_precision['precision_std']:.4f})")
-    print(f"Best Recall:    {best_recall['model_name']} ({best_recall['recall_mean']:.4f} ± {best_recall['recall_std']:.4f})")
+    print(
+        f"Best Accuracy:  {best_accuracy['model_name']} ({best_accuracy['accuracy_mean']:.4f} ± {best_accuracy['accuracy_std']:.4f})"
+    )
+    print(
+        f"Best Precision: {best_precision['model_name']} ({best_precision['precision_mean']:.4f} ± {best_precision['precision_std']:.4f})"
+    )
+    print(
+        f"Best Recall:    {best_recall['model_name']} ({best_recall['recall_mean']:.4f} ± {best_recall['recall_std']:.4f})"
+    )
     print(f"Best F1-Score:  {best_f1['model_name']} ({best_f1['f1_mean']:.4f} ± {best_f1['f1_std']:.4f})")
+
 
 def main():
     """
@@ -119,6 +130,7 @@ def main():
     print("\nBoth models have been trained and evaluated with 10-fold CV!")
     print("Cross-validation provides a more robust estimate of model performance.")
     print("Check the comparison tables above to see which model performs better.")
+
 
 if __name__ == "__main__":
     main()

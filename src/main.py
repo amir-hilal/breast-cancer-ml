@@ -11,6 +11,7 @@ Available comparison scripts:
    - Uses 10-fold cross-validation for robust evaluation
 """
 
+
 def main():
     """
     Display available comparison scripts
@@ -46,6 +47,7 @@ def main():
     print("  - train_random_forest.py: Random Forest model")
 
     print("\nComparison Scripts (comparison/):")
+
 
 if __name__ == "__main__":
     main()

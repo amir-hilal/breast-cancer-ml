@@ -4,6 +4,7 @@ Decision Tree model training
 from sklearn.tree import DecisionTreeClassifier
 from utils.config import DECISION_TREE_PARAMS
 
+
 def create_decision_tree_pipeline():
     """
     Create a Decision Tree classifier (no scaling needed - DTs are scale-invariant)
@@ -24,6 +25,7 @@ def create_decision_tree_pipeline():
         print(f"  - {param}: {value}")
 
     return model
+
 
 def train_decision_tree(model, X_train, y_train):
     """

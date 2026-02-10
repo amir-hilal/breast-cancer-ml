@@ -18,14 +18,14 @@ def test_load_data():
     df, _ = load_data()
     assert df is not None
     assert len(df) > 0
-    assert 'diagnosis' in df.columns
+    assert "diagnosis" in df.columns
 
 
 def test_drop_unnecessary_columns():
     """Test column dropping"""
     df, _ = load_data()
     df_clean = drop_unnecessary_columns(df)
-    assert 'id' not in df_clean.columns
+    assert "id" not in df_clean.columns
 
 
 def test_encode_target():
@@ -35,7 +35,7 @@ def test_encode_target():
     df_encoded = encode_target(df_clean)
 
     # Check that diagnosis values are now 0 or 1
-    assert df_encoded['diagnosis'].isin([0, 1]).all()
+    assert df_encoded["diagnosis"].isin([0, 1]).all()
 
 
 def test_split_features_target():
@@ -47,7 +47,7 @@ def test_split_features_target():
     X, y = split_features_target(df_encoded)
 
     assert len(X) == len(y)
-    assert 'diagnosis' not in X.columns
+    assert "diagnosis" not in X.columns
     assert len(X.columns) == 30  # 30 features
 
 
@@ -56,8 +56,8 @@ def test_create_model():
     model = create_logistic_regression_model()
 
     assert model is not None
-    assert hasattr(model, 'fit')
-    assert hasattr(model, 'predict')
+    assert hasattr(model, "fit")
+    assert hasattr(model, "predict")
 
 
 def test_model_training_smoke():
@@ -72,9 +72,7 @@ def test_model_training_smoke():
     X, y = split_features_target(df)
 
     # Use small subset for fast testing
-    X_small, _, y_small, _ = train_test_split(
-        X, y, train_size=0.2, random_state=RANDOM_STATE, stratify=y
-    )
+    X_small, _, y_small, _ = train_test_split(X, y, train_size=0.2, random_state=RANDOM_STATE, stratify=y)
 
     # Create and train model
     model = create_logistic_regression_model()

@@ -6,12 +6,13 @@ from utils.config import RANDOM_STATE
 
 # Random Forest parameters
 RANDOM_FOREST_PARAMS = {
-    'n_estimators': 100,
-    'max_depth': 10,
-    'min_samples_split': 5,
-    'min_samples_leaf': 2,
-    'random_state': RANDOM_STATE
+    "n_estimators": 100,
+    "max_depth": 10,
+    "min_samples_split": 5,
+    "min_samples_leaf": 2,
+    "random_state": RANDOM_STATE,
 }
+
 
 def create_random_forest_model():
     """
@@ -33,6 +34,7 @@ def create_random_forest_model():
         print(f"  - {param}: {value}")
 
     return model
+
 
 def train_random_forest(model, X_train, y_train):
     """

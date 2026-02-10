@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from utils.config import TARGET_COLUMN, CLASS_LABELS, TEST_SIZE, RANDOM_STATE
 
+
 def encode_target(df):
     """
     Encode the target variable from M/B to 1/0
@@ -27,6 +28,7 @@ def encode_target(df):
 
     print("\nEncoding complete!")
     return df
+
 
 def split_features_target(df):
     """
@@ -53,6 +55,7 @@ def split_features_target(df):
 
     return X, y
 
+
 def split_train_test(X, y):
     """
     Split data into training and testing sets
@@ -69,10 +72,7 @@ def split_train_test(X, y):
     print("=" * 60)
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y,
-        test_size=TEST_SIZE,
-        random_state=RANDOM_STATE,
-        stratify=y  # Maintain class distribution
+        X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE, stratify=y  # Maintain class distribution
     )
 
     print(f"Test size: {TEST_SIZE * 100}%")
@@ -86,6 +86,7 @@ def split_train_test(X, y):
     print(y_test.value_counts())
 
     return X_train, X_test, y_train, y_test
+
 
 def scale_features(X_train, X_test):
     """

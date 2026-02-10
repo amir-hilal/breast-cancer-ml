@@ -2,7 +2,7 @@ import pandas as pd
 import os
 
 # Path to the dataset
-dataset_path = r'C:\Users\user123\.cache\kagglehub\datasets\yasserh\breast-cancer-dataset\versions\1'
+dataset_path = r"C:\Users\user123\.cache\kagglehub\datasets\yasserh\breast-cancer-dataset\versions\1"
 
 # List files in the dataset directory
 print("=" * 60)
@@ -13,7 +13,7 @@ for file in files:
     print(f"  - {file}")
 
 # Find and load the CSV file
-csv_file = [f for f in files if f.endswith('.csv')][0]
+csv_file = [f for f in files if f.endswith(".csv")][0]
 data_file_path = os.path.join(dataset_path, csv_file)
 
 print(f"\nLoading data from: {csv_file}")
@@ -46,9 +46,9 @@ print("=" * 60)
 print(f"M = Malignant (cancerous)")
 print(f"B = Benign (non-cancerous)")
 print(f"\nValue counts:")
-print(df['diagnosis'].value_counts())
+print(df["diagnosis"].value_counts())
 print(f"\nPercentage distribution:")
-print(df['diagnosis'].value_counts(normalize=True) * 100)
+print(df["diagnosis"].value_counts(normalize=True) * 100)
 
 # Display data types
 print("\n" + "=" * 60)

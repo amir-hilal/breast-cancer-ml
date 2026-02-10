@@ -8,7 +8,8 @@ from pathlib import Path
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 import warnings
-warnings.filterwarnings('ignore')
+
+warnings.filterwarnings("ignore")
 
 # Import data loading functions
 from utils.load_data import load_data, drop_unnecessary_columns, display_data_info
@@ -22,6 +23,7 @@ from training_models.train_logistic_regression import create_logistic_regression
 
 # Import evaluation functions
 from utils.evaluate import evaluate_model, compare_models
+
 
 def main():
     """
@@ -66,6 +68,7 @@ def main():
     print("=" * 60)
     print("\nBoth models have been trained and evaluated successfully!")
     print("Check the comparison table above to see which model performs better.")
+
 
 if __name__ == "__main__":
     main()

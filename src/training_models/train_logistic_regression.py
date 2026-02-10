@@ -6,6 +6,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from utils.config import LOGISTIC_REGRESSION_PARAMS
 
+
 def create_logistic_regression_model():
     """
     Create a pipeline with StandardScaler and Logistic Regression classifier
@@ -17,10 +18,7 @@ def create_logistic_regression_model():
     print("CREATING LOGISTIC REGRESSION MODEL")
     print("=" * 60)
 
-    model = Pipeline([
-        ('scaler', StandardScaler()),
-        ('classifier', LogisticRegression(**LOGISTIC_REGRESSION_PARAMS))
-    ])
+    model = Pipeline([("scaler", StandardScaler()), ("classifier", LogisticRegression(**LOGISTIC_REGRESSION_PARAMS))])
 
     print("Pipeline steps:")
     print("  1. StandardScaler - Feature scaling")
@@ -30,6 +28,7 @@ def create_logistic_regression_model():
         print(f"  - {param}: {value}")
 
     return model
+
 
 def train_logistic_regression(model, X_train, y_train):
     """
