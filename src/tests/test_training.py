@@ -22,7 +22,6 @@ def sample_data():
     """Create sample breast cancer dataset for testing"""
     np.random.seed(42)
     n_samples = 100
-    n_features = 30
 
     # Create sample features
     data = {
