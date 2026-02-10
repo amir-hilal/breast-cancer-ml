@@ -117,31 +117,17 @@ jobs:
 
           echo "✓ ECS service updated - new deployment initiated"
 
-      - name: Create GitHub Release
+      - name: Upload deployment artifacts
         if: steps.check_promotion.outputs.promoted == 'true'
-        uses: softprops/action-gh-release@v1
+        uses: actions/upload-artifact@v3
         with:
-          tag_name: ${{ steps.get_version.outputs.version }}
-          name: Release ${{ steps.get_version.outputs.version }}
-          files: |
+          name: deployment-artifacts-${{ steps.get_version.outputs.version }}
+          path: |
             models/latest/confusion_matrix.png
             models/latest/classification_report.txt
             models/latest/run_summary.json
-          body: |
-            ## Model Release ${{ steps.get_version.outputs.version }}
-
-            ✓ Model trained and promoted successfully
-            ✓ Docker image pushed to ECR
-            ✓ Deployed to production
-
-            **API Version:** ${{ steps.get_version.outputs.version }}
-            **Model Version:** See promotion_metadata.json for MLflow run ID
-
-            See attached artifacts for model performance metrics.
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            models/latest/promotion_metadata.json
+          retention-days: 90
 
       - name: Notify deployment status
         if: always()
