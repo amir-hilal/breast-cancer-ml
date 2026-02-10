@@ -33,7 +33,7 @@ def main():
     print("Comparing Logistic Regression vs Decision Tree")
 
     # Step 1: Load data
-    df = load_data()
+    df, _ = load_data()
     df = drop_unnecessary_columns(df)
     display_data_info(df)
 

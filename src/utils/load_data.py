@@ -16,7 +16,7 @@ def load_data():
     3. Kaggle auto-download
 
     Returns:
-        pd.DataFrame: Loaded dataset
+        tuple: (pd.DataFrame, Path) - Loaded dataset and the file path used
     """
     print("\n" + "=" * 60)
     print("LOADING DATA")
@@ -35,7 +35,7 @@ def load_data():
         df = pd.read_csv(dataset_path)
         print(f"Dataset loaded successfully!")
         print(f"Shape: {df.shape[0]} rows, {df.shape[1]} columns")
-        return df
+        return df, dataset_path
 
     # Dataset not found - attempt to download from Kaggle
     print(f"⚠️  Dataset not found at {dataset_path}")
@@ -60,7 +60,7 @@ def load_data():
         print(f"Dataset loaded successfully!")
         print(f"Shape: {df.shape[0]} rows, {df.shape[1]} columns")
 
-        return df
+        return df, csv_path
 
     except ImportError:
         raise RuntimeError(
@@ -93,7 +93,7 @@ def _load_from_s3(s3_uri):
         s3_uri: S3 URI (e.g., s3://bucket/path/to/file.csv)
 
     Returns:
-        pd.DataFrame: Loaded dataset
+        tuple: (pd.DataFrame, Path) - Loaded dataset and local file path
     """
     print(f"Loading from S3: {s3_uri}")
 
@@ -127,7 +127,7 @@ def _load_from_s3(s3_uri):
         print(f"Dataset loaded successfully!")
         print(f"Shape: {df.shape[0]} rows, {df.shape[1]} columns")
 
-        return df
+        return df, local_path
 
     except ImportError:
         raise RuntimeError(

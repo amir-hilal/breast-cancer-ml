@@ -242,15 +242,15 @@ def train_pipeline(k_folds=10, smoke_test=False):
         print("STEP 1: DATA LOADING & PREPROCESSING")
         print("=" * 60)
 
-        df = load_data()
+        df, dataset_path = load_data()
         df = drop_unnecessary_columns(df)
 
         # Compute data version hash
-        data_hash = compute_data_hash(DATASET_PATH)
+        data_hash = compute_data_hash(dataset_path)
         print(f"\nData Version (SHA256): {data_hash[:16]}...")
         mlflow.log_param("data_version", data_hash[:16])
         mlflow.log_param("data_hash_full", data_hash)
-        mlflow.log_param("dataset_path", DATASET_PATH)
+        mlflow.log_param("dataset_path", str(dataset_path))
 
         # Encode target and split
         df = encode_target(df)

@@ -71,7 +71,7 @@ def main():
     print("Using 10-Fold Cross-Validation")
 
     # Step 1: Load data
-    df = load_data()
+    df, _ = load_data()
     df = drop_unnecessary_columns(df)
     display_data_info(df)
 
