@@ -28,8 +28,13 @@ def test_health():
         response = requests.get(f"{API_URL}/health")
         response.raise_for_status()
 
+        result = response.json()
         print(f"✅ Status: {response.status_code}")
-        print(f"Response: {json.dumps(response.json(), indent=2)}")
+        print(f"\nHealth Status: {result.get('status')}")
+        print(f"Model Status: {result.get('model_status')}")
+        print(f"API Version: {result.get('api_version')}")
+        print(f"Model Version: {result.get('model_version')}")
+        print(f"Model Promoted At: {result.get('model_promoted_at')}")
         return True
     except Exception as e:
         print(f"❌ Error: {str(e)}")
@@ -61,6 +66,8 @@ def test_prediction():
         print(f"  Prediction: {result['prediction']} ({result['prediction_label']})")
         print(f"  Probability: {result['probability']:.4f}")
         print(f"  Confidence: {result['confidence']}")
+        print(f"  API Version: {result['api_version']}")
+        print(f"  Model Version: {result['model_version']}")
 
         # Interpretation
         if result['prediction'] == 1:
@@ -84,8 +91,15 @@ def test_model_info():
         response = requests.get(f"{API_URL}/model/info")
         response.raise_for_status()
 
+        result = response.json()
         print(f"✅ Status: {response.status_code}")
-        print(f"Response: {json.dumps(response.json(), indent=2)}")
+        print(f"\nAPI Version: {result.get('api_version')}")
+        print(f"Model Type: {result.get('model_type')}")
+        print(f"Model Version: {result.get('model_version')}")
+        print(f"\nPromotion Metadata:")
+        metadata = result.get('promotion_metadata', {})
+        for key, value in metadata.items():
+            print(f"  {key}: {value}")
         return True
     except Exception as e:
         print(f"❌ Error: {str(e)}")
@@ -101,6 +115,15 @@ def main():
     print("\nMake sure the API is running:")
     print("  cd src")
     print("  uvicorn src.api.main:app --reload")
+
+    # Test root endpoint
+    try:
+        response = requests.get(f"{API_URL}/")
+        root_info = response.json()
+        print(f"\nℹ️  API Version: {root_info.get('api_version', 'unknown')}")
+        print(f"   Model Version: {root_info.get('model_version', 'unknown')}")
+    except:
+        pass
 
     # Test health
     health_ok = test_health()

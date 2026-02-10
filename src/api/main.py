@@ -20,24 +20,42 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Global model variable
 model = None
+model_metadata = {}
 MODEL_PATH = Path("models/latest/model")
+
+# Read API version from VERSION file
+version_file = Path(__file__).parent.parent.parent / "VERSION"
+if version_file.exists():
+    with open(version_file, 'r') as f:
+        API_VERSION = f"v{f.read().strip()}"
+else:
+    API_VERSION = "development"
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan event handler for startup and shutdown"""
     # Startup: Load the model
-    global model
+    global model, model_metadata
     try:
         if MODEL_PATH.exists():
             model = mlflow.sklearn.load_model(MODEL_PATH)
             print(f"✓ Model loaded successfully from {MODEL_PATH}")
+
+            # Load model metadata
+            metadata_path = Path("models/latest/promotion_metadata.json")
+            if metadata_path.exists():
+                import json
+                with open(metadata_path, 'r') as f:
+                    model_metadata = json.load(f)
+                print(f"✓ Model metadata loaded: Run ID {model_metadata.get('mlflow_run_id', 'unknown')}")
         else:
             print(f"⚠️  Model not found at {MODEL_PATH}")
             print("   Run training pipeline first: python src/train.py")
     except Exception as e:
         print(f"✗ Error loading model: {str(e)}")
         model = None
+        model_metadata = {}
 
     yield
 
@@ -48,7 +66,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Breast Cancer Detection API",
     description="ML-powered API for breast cancer diagnosis prediction",
-    version="1.0.0",
+    version=API_VERSION,
     lifespan=lifespan
 )
 
@@ -90,6 +108,8 @@ class PredictionOutput(BaseModel):
     prediction_label: str = Field(..., description="Human-readable label")
     probability: float = Field(..., description="Probability of malignancy (0-1)")
     confidence: str = Field(..., description="Confidence level")
+    api_version: str = Field(..., description="API version")
+    model_version: str = Field(..., description="Model run ID")
 
 
 @app.get("/")
@@ -97,7 +117,9 @@ async def root():
     """Root endpoint"""
     return {
         "message": "Breast Cancer Detection API",
-        "version": "1.0.0",
+        "api_version": API_VERSION,
+        "model_version": model_metadata.get('mlflow_run_id', 'unknown'),
+        "model_promoted_at": model_metadata.get('promoted_at', 'unknown'),
         "docs": "/docs",
         "health": "/health"
     }
@@ -111,7 +133,10 @@ async def health():
     return {
         "status": "healthy" if model is not None else "degraded",
         "model_status": model_status,
-        "model_path": str(MODEL_PATH)
+        "model_path": str(MODEL_PATH),
+        "api_version": API_VERSION,
+        "model_version": model_metadata.get('mlflow_run_id', 'unknown'),
+        "model_promoted_at": model_metadata.get('promoted_at', 'unknown')
     }
 
 
@@ -165,7 +190,9 @@ async def predict(input_data: PredictionInput):
             prediction=prediction,
             prediction_label=label,
             probability=prediction_proba,
-            confidence=confidence
+            confidence=confidence,
+            api_version=API_VERSION,
+            model_version=model_metadata.get('mlflow_run_id', 'unknown')
         )
 
     except Exception as e:
@@ -182,19 +209,12 @@ async def model_info():
         raise HTTPException(status_code=503, detail="Model not loaded")
 
     try:
-        # Load promotion metadata if available
-        metadata_path = Path("models/latest/promotion_metadata.json")
-        metadata = {}
-
-        if metadata_path.exists():
-            import json
-            with open(metadata_path, 'r') as f:
-                metadata = json.load(f)
-
         return {
+            "api_version": API_VERSION,
             "model_type": str(type(model)),
             "model_path": str(MODEL_PATH),
-            "promotion_metadata": metadata
+            "model_version": model_metadata.get('mlflow_run_id', 'unknown'),
+            "promotion_metadata": model_metadata
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

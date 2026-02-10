@@ -28,6 +28,7 @@ RUN pip install --no-cache /wheels/*
 # Copy application code
 COPY src/ ./src/
 COPY models/ ./models/
+COPY VERSION ./VERSION
 
 # Set Python path
 ENV PYTHONPATH=/app/src

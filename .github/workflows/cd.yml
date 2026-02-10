@@ -2,8 +2,8 @@ name: CD - Continuous Deployment
 
 on:
   push:
-    tags:
-      - "v*.*.*" # Trigger on version tags like v1.0.0
+    branches:
+      - main # Trigger on push to main branch
   workflow_dispatch: # Allow manual triggering
 
 env:
@@ -57,10 +57,13 @@ jobs:
             exit 1
           fi
 
-      - name: Extract version
-        id: extract_version
+      - name: Read API version from file
+        id: get_version
         run: |
-          echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          VERSION=$(cat VERSION | tr -d '[:space:]')
+          echo "version=v${VERSION}" >> $GITHUB_OUTPUT
+          echo "version_number=${VERSION}" >> $GITHUB_OUTPUT
+          echo "API Version: v${VERSION}"
 
       - name: Configure AWS credentials
         if: steps.check_promotion.outputs.promoted == 'true'
@@ -79,9 +82,11 @@ jobs:
         if: steps.check_promotion.outputs.promoted == 'true'
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ steps.extract_version.outputs.version }}
+          IMAGE_TAG: ${{ steps.get_version.outputs.version }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f deployment/Dockerfile .
+          docker build \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            -f deployment/Dockerfile .
           docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
         id: build-image
@@ -90,7 +95,7 @@ jobs:
         if: steps.check_promotion.outputs.promoted == 'true'
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ steps.extract_version.outputs.version }}
+          IMAGE_TAG: ${{ steps.get_version.outputs.version }}
         run: |
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
@@ -100,7 +105,7 @@ jobs:
         if: steps.check_promotion.outputs.promoted == 'true'
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ steps.extract_version.outputs.version }}
+          IMAGE_TAG: ${{ steps.get_version.outputs.version }}
         run: |
           # Update ECS service with new image
           echo "Deploying to ECS..."
@@ -116,15 +121,21 @@ jobs:
         if: steps.check_promotion.outputs.promoted == 'true'
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: ${{ steps.get_version.outputs.version }}
+          name: Release ${{ steps.get_version.outputs.version }}
           files: |
             models/latest/confusion_matrix.png
             models/latest/classification_report.txt
             models/latest/run_summary.json
           body: |
-            ## Model Release ${{ steps.extract_version.outputs.version }}
+            ## Model Release ${{ steps.get_version.outputs.version }}
 
             ✓ Model trained and promoted successfully
             ✓ Docker image pushed to ECR
+            ✓ Deployed to production
+
+            **API Version:** ${{ steps.get_version.outputs.version }}
+            **Model Version:** See promotion_metadata.json for MLflow run ID
 
             See attached artifacts for model performance metrics.
           draft: false

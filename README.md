@@ -172,6 +172,7 @@ See [deployment/DEPLOYMENT.md](deployment/DEPLOYMENT.md) for full guide.
 
 ## 📚 Documentation
 
+- **[VERSIONING.md](VERSIONING.md)** - 🆕 API versioning system (file-based)
 - **[S3_DATASET_SETUP.md](S3_DATASET_SETUP.md)** - 🆕 AWS S3 dataset storage for CI/CD
 - **[DATASET_CONFIG.md](DATASET_CONFIG.md)** - Dataset setup & auto-download
 - **[MLFLOW_GUIDE.md](MLFLOW_GUIDE.md)** - MLflow training pipeline guide
