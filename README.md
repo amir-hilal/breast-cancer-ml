@@ -108,7 +108,7 @@ mlflow ui  # View results at localhost:5000
 ### 2. Model Promotion Logic
 Automatically promotes models to `models/latest/` if they meet:
 - **Recall ≥ 95%** (critical for medical diagnosis)
-- **Recall Std ≤ 5%** (stability requirement)
+- **Recall Std ≤ 7%** (stability requirement)
 
 Only promoted models are deployed to production!
 

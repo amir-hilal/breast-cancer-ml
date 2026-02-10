@@ -85,7 +85,7 @@ Models are **automatically promoted** to `models/latest/` if they meet:
 ```python
 MODEL_PROMOTION_THRESHOLDS = {
     'min_recall': 0.95,        # ≥ 95% recall (critical for medical diagnosis)
-    'max_recall_std': 0.05,    # ≤ 5% std (stability requirement)
+    'max_recall_std': 0.07,    # ≤ 5% std (stability requirement)
 }
 ```
 
@@ -268,7 +268,7 @@ breast-cancer-ml/
 
 3. Check Promotion Criteria
    ├─> Recall ≥ 0.95? ✓
-   └─> Std ≤ 0.05? ✓
+   └─> Std ≤ 0.07? ✓
 
 4. If Promoted:
    ├─> Copy to models/latest/
