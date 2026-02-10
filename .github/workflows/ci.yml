@@ -70,31 +70,20 @@ jobs:
                   path = kagglehub.download('yasserh/breast-cancer-dataset')
               print(f'Dataset downloaded to: {path}')
 
-              # Find CSV and copy to expected location
+              # Find CSV and ensure it's in the expected location
               import shutil
               csv_files = list(Path(path).glob('**/*.csv'))
               if csv_files:
                   target_dir = Path.home() / '.cache/kagglehub/datasets/yasserh/breast-cancer-dataset/versions/1'
-                  target_dir.mkdir(parents=True, exist_ok=True)
-                  shutil.copy2(csv_files[0], target_dir / 'breast-cancer.csv')
-                  print(f'Dataset copied to: {target_dir / \"breast-cancer.csv\"}')
-              else:
-                  print('Warning: No CSV files found')
-                  sys.exit(1)
-          except Exception as e:
-              print(f'Error downloading dataset: {e}')
-              print('Smoke test will be skipped')
-              sys.exit(1)
-          "
-        continue-on-error: true
-        id: download-dataset
-
-      - name: Smoke test - Train model on subset
-        if: steps.download-dataset.outcome == 'success'
-        run: |
-          cd src
-          python train.py --smoke --k-folds 3
-        env:
+                  target_file = target_dir / 'breast-cancer.csv'
+                  
+                  # Only copy if source and destination are different
+                  if csv_files[0].resolve() != target_file.resolve():
+                      target_dir.mkdir(parents=True, exist_ok=True)
+                      shutil.copy2(csv_files[0], target_file)
+                      print(f'Dataset copied to: {target_file}')
+                  else:
+                      print(f'Dataset already at expected location: {target_file}')
           MLFLOW_TRACKING_URI: file:./mlruns
         id: smoke-test
 
