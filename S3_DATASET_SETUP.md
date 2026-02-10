@@ -4,11 +4,11 @@ This guide shows you how to store the dataset in **AWS S3** for use in CI/CD pip
 
 ## 🎯 Why Use S3 for Datasets?
 
-✅ **No Git bloat** - Keep CSV files out of your repository  
-✅ **CI/CD friendly** - GitHub Actions can download from S3  
-✅ **Production ready** - Same dataset source for training and deployment  
-✅ **Versioning** - Use S3 versioning to track dataset changes  
-✅ **Cost effective** - ~$0.023/GB/month for Standard storage  
+✅ **No Git bloat** - Keep CSV files out of your repository
+✅ **CI/CD friendly** - GitHub Actions can download from S3
+✅ **Production ready** - Same dataset source for training and deployment
+✅ **Versioning** - Use S3 versioning to track dataset changes
+✅ **Cost effective** - ~$0.023/GB/month for Standard storage
 
 ---
 
@@ -249,7 +249,7 @@ Shape: 569 rows, 31 columns
 **Dataset**: 125 KB (0.000122 GB)
 
 - **Storage**: $0.023/GB/month × 0.000122 GB = **$0.000003/month** (negligible)
-- **Requests**: 
+- **Requests**:
   - PUT requests: ~1/month = $0.000005
   - GET requests: ~30/month (CI/CD) = $0.000012
 - **Data transfer OUT to EC2/ECS**: FREE (same region)

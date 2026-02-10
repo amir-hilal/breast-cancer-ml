@@ -26,9 +26,9 @@ def load_data():
     s3_uri = os.environ.get('DATASET_S3_URI', '')
     if s3_uri.startswith('s3://'):
         return _load_from_s3(s3_uri)
-    
+
     dataset_path = Path(DATASET_PATH)
-    
+
     # Try to load from local path first
     if dataset_path.exists():
         print(f"Loading from: {dataset_path}")
@@ -36,32 +36,32 @@ def load_data():
         print(f"Dataset loaded successfully!")
         print(f"Shape: {df.shape[0]} rows, {df.shape[1]} columns")
         return df
-    
+
     # Dataset not found - attempt to download from Kaggle
     print(f"⚠️  Dataset not found at {dataset_path}")
     print(f"Attempting to download from Kaggle: {KAGGLE_DATASET}")
-    
+
     try:
         import kagglehub
-        
+
         # Download dataset from Kaggle (correct API)
         download_path = kagglehub.dataset_download(KAGGLE_DATASET, force_download=False)
         print(f"✓ Dataset downloaded to: {download_path}")
-        
+
         # Find CSV file in downloaded directory
         csv_files = list(Path(download_path).glob('**/*.csv'))
         if not csv_files:
             raise FileNotFoundError(f"No CSV files found in {download_path}")
-        
+
         csv_path = csv_files[0]
         print(f"Using: {csv_path.name}")
-        
+
         df = pd.read_csv(csv_path)
         print(f"Dataset loaded successfully!")
         print(f"Shape: {df.shape[0]} rows, {df.shape[1]} columns")
-        
+
         return df
-        
+
     except ImportError:
         raise RuntimeError(
             "\n❌ Dataset not found and 'kagglehub' is not installed.\n"
@@ -88,47 +88,47 @@ def load_data():
 def _load_from_s3(s3_uri):
     """
     Load dataset from AWS S3
-    
+
     Args:
         s3_uri: S3 URI (e.g., s3://bucket/path/to/file.csv)
-    
+
     Returns:
         pd.DataFrame: Loaded dataset
     """
     print(f"Loading from S3: {s3_uri}")
-    
+
     try:
         import boto3
         from botocore.exceptions import ClientError, NoCredentialsError
-        
+
         # Parse S3 URI
         parts = s3_uri.replace('s3://', '').split('/', 1)
         bucket = parts[0]
         key = parts[1] if len(parts) > 1 else ''
-        
+
         if not key:
             raise ValueError(f"Invalid S3 URI: {s3_uri}")
-        
+
         # Download from S3
         s3_client = boto3.client('s3')
-        
+
         # Create local data directory
         data_dir = PROJECT_ROOT / 'data'
         data_dir.mkdir(exist_ok=True)
-        
+
         local_path = data_dir / Path(key).name
-        
+
         print(f"Downloading from bucket '{bucket}', key '{key}'...")
         s3_client.download_file(bucket, key, str(local_path))
         print(f"✓ Downloaded to: {local_path}")
-        
+
         # Load CSV
         df = pd.read_csv(local_path)
         print(f"Dataset loaded successfully!")
         print(f"Shape: {df.shape[0]} rows, {df.shape[1]} columns")
-        
+
         return df
-        
+
     except ImportError:
         raise RuntimeError(
             "\n❌ boto3 is not installed.\n"

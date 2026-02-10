@@ -15,11 +15,11 @@ This project uses the **Wisconsin Breast Cancer Dataset** from Kaggle. The datas
 **Best for**: GitHub Actions, Docker, AWS deployments
 
 ### Why S3?
-✅ No CSV files in Git repository  
-✅ Fast downloads in CI/CD  
-✅ Version control for datasets  
-✅ Same source for training and deployment  
-✅ Cost: ~$0.01/month  
+✅ No CSV files in Git repository
+✅ Fast downloads in CI/CD
+✅ Version control for datasets
+✅ Same source for training and deployment
+✅ Cost: ~$0.01/month
 
 ### Quick Setup
 
