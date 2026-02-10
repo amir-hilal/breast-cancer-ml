@@ -91,12 +91,12 @@ Add this step to your `.github/workflows/cd.yml` after the ECS deployment:
         if: steps.check_promotion.outputs.promoted == 'true'
         run: |
           echo "🔍 Retrieving API endpoint..."
-          
+
           # Wait for service to stabilize
           aws ecs wait services-stable \
             --cluster ${{ env.ECS_CLUSTER }} \
             --services ${{ env.ECS_SERVICE }}
-          
+
           # Get task ARN
           TASK_ARN=$(aws ecs list-tasks \
             --cluster ${{ env.ECS_CLUSTER }} \
@@ -104,20 +104,20 @@ Add this step to your `.github/workflows/cd.yml` after the ECS deployment:
             --desired-status RUNNING \
             --query 'taskArns[0]' \
             --output text)
-          
+
           # Get ENI ID
           ENI_ID=$(aws ecs describe-tasks \
             --cluster ${{ env.ECS_CLUSTER }} \
             --tasks $TASK_ARN \
             --query 'tasks[0].attachments[0].details[?name==`networkInterfaceId`].value' \
             --output text)
-          
+
           # Get public IP
           PUBLIC_IP=$(aws ec2 describe-network-interfaces \
             --network-interface-ids $ENI_ID \
             --query 'NetworkInterfaces[0].Association.PublicIp' \
             --output text)
-          
+
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo "🚀 API ENDPOINT URL"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

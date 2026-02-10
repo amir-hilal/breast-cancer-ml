@@ -125,9 +125,9 @@ jobs:
             --cluster ${{ env.ECS_CLUSTER }} \
             --services ${{ env.ECS_SERVICE }} \
             --region ${{ env.AWS_REGION }}
-          
+
           echo "🔍 Retrieving API endpoint..."
-          
+
           # Get task ARN
           TASK_ARN=$(aws ecs list-tasks \
             --cluster ${{ env.ECS_CLUSTER }} \
@@ -136,7 +136,7 @@ jobs:
             --query 'taskArns[0]' \
             --output text \
             --region ${{ env.AWS_REGION }})
-          
+
           # Get ENI ID
           ENI_ID=$(aws ecs describe-tasks \
             --cluster ${{ env.ECS_CLUSTER }} \
@@ -144,14 +144,14 @@ jobs:
             --query 'tasks[0].attachments[0].details[?name==`networkInterfaceId`].value' \
             --output text \
             --region ${{ env.AWS_REGION }})
-          
+
           # Get public IP
           PUBLIC_IP=$(aws ec2 describe-network-interfaces \
             --network-interface-ids $ENI_ID \
             --query 'NetworkInterfaces[0].Association.PublicIp' \
             --output text \
             --region ${{ env.AWS_REGION }})
-          
+
           echo ""
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo "🚀 DEPLOYMENT SUCCESSFUL!"
