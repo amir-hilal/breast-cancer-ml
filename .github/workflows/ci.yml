@@ -53,37 +53,25 @@ jobs:
           flags: unittests
           name: codecov-umbrella
 
-      - name: Download dataset for smoke test
+      - name: Configure AWS credentials for dataset download
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Download dataset from S3
         run: |
-          mkdir -p data
-          # Download breast cancer dataset from Kaggle using kagglehub
-          python -c "
-          import sys
-          from pathlib import Path
-          try:
-              import kagglehub
-              # Try new API first
-              if hasattr(kagglehub, 'dataset_download'):
-                  path = kagglehub.dataset_download('yasserh/breast-cancer-dataset')
-              else:
-                  # Fallback for older API
-                  path = kagglehub.download('yasserh/breast-cancer-dataset')
-              print(f'Dataset downloaded to: {path}')
+          echo "Downloading dataset from S3..."
+          mkdir -p ~/.cache/kagglehub/datasets/yasserh/breast-cancer-dataset/versions/1
+          aws s3 cp ${{ secrets.DATASET_S3_URI }} ~/.cache/kagglehub/datasets/yasserh/breast-cancer-dataset/versions/1/breast-cancer.csv --no-progress
+          echo "✓ Dataset downloaded successfully"
 
-              # Find CSV and ensure it's in the expected location
-              import shutil
-              csv_files = list(Path(path).glob('**/*.csv'))
-              if csv_files:
-                  target_dir = Path.home() / '.cache/kagglehub/datasets/yasserh/breast-cancer-dataset/versions/1'
-                  target_file = target_dir / 'breast-cancer.csv'
-
-                  # Only copy if source and destination are different
-                  if csv_files[0].resolve() != target_file.resolve():
-                      target_dir.mkdir(parents=True, exist_ok=True)
-                      shutil.copy2(csv_files[0], target_file)
-                      print(f'Dataset copied to: {target_file}')
-                  else:
-                      print(f'Dataset already at expected location: {target_file}')
+      - name: Run smoke test
+        run: |
+          cd src
+          python train.py --smoke --k-folds 3
+        env:
           MLFLOW_TRACKING_URI: file:./mlruns
         id: smoke-test
 
