@@ -1,3 +1,74 @@
+# Python
 .venv
-__pycache__
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# MLflow
+mlruns/
+mlartifacts/
+temp_artifacts/
+
+# Models
+models/
+!models/.gitkeep
+
+# Jupyter
+.ipynb_checkpoints
+*.ipynb
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Data (large files)
+*.csv
+*.parquet
+*.pkl
+*.joblib
+data/raw/
+data/processed/
+
+# Secrets
+.env
+.env.local
+secrets.json
+*.pem
+*.key
+
 

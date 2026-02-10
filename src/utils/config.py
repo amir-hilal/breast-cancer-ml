@@ -34,3 +34,36 @@ LOGISTIC_REGRESSION_PARAMS = {
     'max_iter': 1000,
     'solver': 'lbfgs'
 }
+
+RANDOM_FOREST_PARAMS = {
+    'random_state': RANDOM_STATE,
+    'n_estimators': 100,
+    'max_depth': 10,
+    'min_samples_split': 5,
+    'min_samples_leaf': 2
+}
+
+# MLflow Configuration
+import os
+from pathlib import Path
+
+# Get project root directory (parent of src/)
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+MLRUNS_PATH = PROJECT_ROOT / "mlruns"
+
+MLFLOW_EXPERIMENT_NAME = "breast-cancer-detection"
+MLFLOW_TRACKING_URI = f"file:///{MLRUNS_PATH.as_posix()}"  # Local tracking at project root
+
+# Model Promotion Thresholds
+MODEL_PROMOTION_THRESHOLDS = {
+    'min_recall': 0.95,        # Minimum recall (sensitivity) for medical diagnosis
+    'max_recall_std': 0.07,    # Maximum standard deviation for stability
+    'min_f1': 0.90             # Minimum F1-score (optional, not enforced by default)
+}
+
+# Model Registry Settings
+MODELS_DIR = PROJECT_ROOT / "models"
+LATEST_MODEL_DIR = PROJECT_ROOT / "models" / "latest"
+
+# CI/CD Settings
+SMOKE_TEST_SAMPLE_SIZE = 0.2  # Use 20% of data for smoke tests
