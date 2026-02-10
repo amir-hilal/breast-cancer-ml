@@ -47,8 +47,20 @@ def load_data():
     try:
         import kagglehub
 
-        # Download dataset from Kaggle (correct API)
-        download_path = kagglehub.dataset_download(KAGGLE_DATASET, force_download=False)
+        # Try to download dataset from Kaggle using the available API
+        download_path = None
+        try:
+            # Try new API first
+            if hasattr(kagglehub, "dataset_download"):
+                download_path = kagglehub.dataset_download(KAGGLE_DATASET, force_download=False)
+            # Fallback to older API
+            elif hasattr(kagglehub, "download"):
+                download_path = kagglehub.download(KAGGLE_DATASET)
+            else:
+                raise AttributeError("kagglehub module has no supported download method")
+        except Exception as api_error:
+            raise AttributeError(f"kagglehub API error: {str(api_error)}")
+
         print(f"✓ Dataset downloaded to: {download_path}")
 
         # Find CSV file in downloaded directory
