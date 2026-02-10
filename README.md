@@ -32,6 +32,8 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
+**Note**: The dataset will download automatically on first run - no manual download needed!
+
 ### 2. Train Model with MLflow (Recommended)
 ```powershell
 cd src
@@ -170,9 +172,11 @@ See [deployment/DEPLOYMENT.md](deployment/DEPLOYMENT.md) for full guide.
 
 ## 📚 Documentation
 
+- **[DATASET_CONFIG.md](DATASET_CONFIG.md)** - 🆕 Dataset setup & auto-download
 - **[MLFLOW_GUIDE.md](MLFLOW_GUIDE.md)** - MLflow training pipeline guide
 - **[MODEL_SELECTION.md](MODEL_SELECTION.md)** - Model comparison analysis
-- **[deployment/DEPLOYMENT.md](deployment/DEPLOYMENT.md)** - AWS deployment guide
+- **[AWS_SETUP_GUIDE.md](AWS_SETUP_GUIDE.md)** - ⭐ Complete AWS setup for CI/CD
+- **[deployment/DEPLOYMENT.md](deployment/DEPLOYMENT.md)** - AWS deployment options
 - **[API Docs](http://localhost:8000/docs)** - Interactive API documentation (after starting API)
 
 ---

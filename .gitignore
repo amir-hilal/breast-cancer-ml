@@ -72,3 +72,4 @@ secrets.json
 *.key
 
 
+aws-iam-user-credentials

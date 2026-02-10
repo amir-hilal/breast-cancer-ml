@@ -3,7 +3,17 @@ Configuration file for breast cancer detection project
 """
 
 # Dataset path
-DATASET_PATH = r'C:\Users\user123\.cache\kagglehub\datasets\yasserh\breast-cancer-dataset\versions\1\breast-cancer.csv'
+import os
+from pathlib import Path
+
+# Allow override via environment variable
+DATASET_PATH = os.environ.get(
+    'DATASET_PATH',
+    r'C:\Users\user123\.cache\kagglehub\datasets\yasserh\breast-cancer-dataset\versions\1\breast-cancer.csv'
+)
+
+# Kaggle dataset identifier for automatic download
+KAGGLE_DATASET = 'yasserh/breast-cancer-dataset'
 
 # Target column
 TARGET_COLUMN = 'diagnosis'
@@ -42,10 +52,6 @@ RANDOM_FOREST_PARAMS = {
     'min_samples_split': 5,
     'min_samples_leaf': 2
 }
-
-# MLflow Configuration
-import os
-from pathlib import Path
 
 # Get project root directory (parent of src/)
 PROJECT_ROOT = Path(__file__).parent.parent.parent

@@ -7,11 +7,13 @@ on:
   workflow_dispatch: # Allow manual triggering
 
 env:
-  AWS_REGION: us-east-1
-  ECR_REPOSITORY: breast-cancer-ml
-  ECS_SERVICE: breast-cancer-api
-  ECS_CLUSTER: ml-cluster
-  CONTAINER_NAME: breast-cancer-api
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+  ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+  ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
+  ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
+  ECS_TASK_DEFINITION: ${{ secrets.ECS_TASK_DEFINITION }}
+  CONTAINER_NAME: api-container
 
 jobs:
   build-and-push:
@@ -90,17 +92,21 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
           echo "✓ Pushed Docker image to ECR"
 
-      - name: Deploy to Amazon ECS (Optional - Uncomment when ECS is set up)
-        if: false # Set to true when ECS infrastructure is ready
+      - name: Deploy to Amazon ECS
+        if: steps.check_promotion.outputs.promoted == 'true'
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ steps.extract_version.outputs.version }}
         run: |
           # Update ECS service with new image
+          echo "Deploying to ECS..."
           aws ecs update-service \
             --cluster ${{ env.ECS_CLUSTER }} \
             --service ${{ env.ECS_SERVICE }} \
-            --force-new-deployment
+            --force-new-deployment \
+            --region ${{ env.AWS_REGION }}
+          
+          echo "✓ ECS service updated - new deployment initiated"
 
       - name: Create GitHub Release
         if: steps.check_promotion.outputs.promoted == 'true'
