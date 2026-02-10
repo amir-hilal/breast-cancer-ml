@@ -2,15 +2,13 @@
 FastAPI application for breast cancer prediction
 Loads the trained model pipeline and exposes REST API endpoints
 """
-import os
+
 import sys
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import List
 
-import joblib
 import mlflow.sklearn
-import numpy as np
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware

@@ -1,6 +1,7 @@
 """
 Logistic Regression model training
 """
+
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -24,7 +25,7 @@ def create_logistic_regression_model():
     print("Pipeline steps:")
     print("  1. StandardScaler - Feature scaling")
     print("  2. LogisticRegression")
-    print(f"\nLogistic Regression parameters:")
+    print("\nLogistic Regression parameters:")
     for param, value in LOGISTIC_REGRESSION_PARAMS.items():
         print(f"  - {param}: {value}")
 

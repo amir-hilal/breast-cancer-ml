@@ -1,7 +1,7 @@
 """
 Data preprocessing functionality
 """
-import pandas as pd
+
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
@@ -22,7 +22,7 @@ def encode_target(df):
     print("ENCODING TARGET VARIABLE")
     print("=" * 60)
 
-    print(f"Original values: M (Malignant), B (Benign)")
+    print("Original values: M (Malignant), B (Benign)")
     print(f"Encoded values: M -> {CLASS_LABELS['M']}, B -> {CLASS_LABELS['B']}")
 
     df[TARGET_COLUMN] = df[TARGET_COLUMN].map(CLASS_LABELS)
@@ -81,9 +81,9 @@ def split_train_test(X, y):
     print(f"\nTraining set: {X_train.shape[0]} samples")
     print(f"Testing set: {X_test.shape[0]} samples")
 
-    print(f"\nTraining set class distribution:")
+    print("\nTraining set class distribution:")
     print(y_train.value_counts())
-    print(f"\nTesting set class distribution:")
+    print("\nTesting set class distribution:")
     print(y_test.value_counts())
 
     return X_train, X_test, y_train, y_test

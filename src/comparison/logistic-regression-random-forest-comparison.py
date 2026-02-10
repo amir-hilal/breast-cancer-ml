@@ -1,30 +1,31 @@
 """
 Comparison between Logistic Regression and Random Forest with 10-fold Cross-Validation
 """
-import os
+
 import sys
-from pathlib import Path
-
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
 import warnings
-
-import numpy as np
+from pathlib import Path
 
 warnings.filterwarnings("ignore")
 
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 # Import model training functions
-from training_models.train_logistic_regression import create_logistic_regression_model, train_logistic_regression
-from training_models.train_random_forest import create_random_forest_model, train_random_forest
+from training_models.train_logistic_regression import (  # noqa: E402
+    create_logistic_regression_model,
+    train_logistic_regression,
+)
+from training_models.train_random_forest import create_random_forest_model, train_random_forest  # noqa: E402
 
 # Import evaluation functions
-from utils.evaluate import compare_models, evaluate_model, perform_cross_validation
+from utils.evaluate import compare_models, evaluate_model, perform_cross_validation  # noqa: E402
 
 # Import data loading functions
-from utils.load_data import display_data_info, drop_unnecessary_columns, load_data
+from utils.load_data import display_data_info, drop_unnecessary_columns, load_data  # noqa: E402
 
 # Import preprocessing functions
-from utils.preprocess import encode_target, split_features_target, split_train_test
+from utils.preprocess import encode_target, split_features_target, split_train_test  # noqa: E402
 
 
 def compare_cv_results(results_list):
@@ -61,15 +62,18 @@ def compare_cv_results(results_list):
     best_f1 = max(results_list, key=lambda x: x["f1_mean"])
 
     print(
-        f"Best Accuracy:  {best_accuracy['model_name']} ({best_accuracy['accuracy_mean']:.4f} ± {best_accuracy['accuracy_std']:.4f})"
+        f"Best Accuracy:  {best_accuracy['model_name']} "
+        f"({best_accuracy['accuracy_mean']:.4f} ± {best_accuracy['accuracy_std']:.4f})"
     )
     print(
-        f"Best Precision: {best_precision['model_name']} ({best_precision['precision_mean']:.4f} ± {best_precision['precision_std']:.4f})"
+        f"Best Precision: {best_precision['model_name']} "
+        f"({best_precision['precision_mean']:.4f} ± {best_precision['precision_std']:.4f})"
     )
     print(
-        f"Best Recall:    {best_recall['model_name']} ({best_recall['recall_mean']:.4f} ± {best_recall['recall_std']:.4f})"
+        f"Best Recall:    {best_recall['model_name']} "
+        f"({best_recall['recall_mean']:.4f} ± {best_recall['recall_std']:.4f})"
     )
-    print(f"Best F1-Score:  {best_f1['model_name']} ({best_f1['f1_mean']:.4f} ± {best_f1['f1_std']:.4f})")
+    print(f"Best F1-Score:  {best_f1['model_name']} " f"({best_f1['f1_mean']:.4f} ± {best_f1['f1_std']:.4f})")
 
 
 def main():

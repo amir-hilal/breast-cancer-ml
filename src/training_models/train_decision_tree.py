@@ -1,6 +1,7 @@
 """
 Decision Tree model training
 """
+
 from sklearn.tree import DecisionTreeClassifier
 
 from utils.config import DECISION_TREE_PARAMS
@@ -21,7 +22,7 @@ def create_decision_tree_pipeline():
 
     print("Decision Tree classifier created")
     print("Note: No feature scaling needed (DTs are scale-invariant)")
-    print(f"\nDecision Tree parameters:")
+    print("\nDecision Tree parameters:")
     for param, value in DECISION_TREE_PARAMS.items():
         print(f"  - {param}: {value}")
 

@@ -1,6 +1,7 @@
 """
 Random Forest model training
 """
+
 from sklearn.ensemble import RandomForestClassifier
 
 from utils.config import RANDOM_STATE
@@ -30,7 +31,7 @@ def create_random_forest_model():
 
     print("Random Forest classifier created")
     print("Note: No feature scaling needed (tree-based model)")
-    print(f"\nRandom Forest parameters:")
+    print("\nRandom Forest parameters:")
     for param, value in RANDOM_FOREST_PARAMS.items():
         print(f"  - {param}: {value}")
 

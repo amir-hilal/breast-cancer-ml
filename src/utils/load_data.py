@@ -1,6 +1,7 @@
 """
 Data loading functionality
 """
+
 import os
 from pathlib import Path
 
@@ -35,7 +36,7 @@ def load_data():
     if dataset_path.exists():
         print(f"Loading from: {dataset_path}")
         df = pd.read_csv(dataset_path)
-        print(f"Dataset loaded successfully!")
+        print("Dataset loaded successfully!")
         print(f"Shape: {df.shape[0]} rows, {df.shape[1]} columns")
         return df, dataset_path
 
@@ -59,7 +60,7 @@ def load_data():
         print(f"Using: {csv_path.name}")
 
         df = pd.read_csv(csv_path)
-        print(f"Dataset loaded successfully!")
+        print("Dataset loaded successfully!")
         print(f"Shape: {df.shape[0]} rows, {df.shape[1]} columns")
 
         return df, csv_path
@@ -126,7 +127,7 @@ def _load_from_s3(s3_uri):
 
         # Load CSV
         df = pd.read_csv(local_path)
-        print(f"Dataset loaded successfully!")
+        print("Dataset loaded successfully!")
         print(f"Shape: {df.shape[0]} rows, {df.shape[1]} columns")
 
         return df, local_path
@@ -184,9 +185,9 @@ def display_data_info(df):
     print("=" * 60)
 
     print(f"\nTarget variable: {TARGET_COLUMN}")
-    print(f"Class distribution:")
+    print("Class distribution:")
     print(df[TARGET_COLUMN].value_counts())
-    print(f"\nPercentage:")
+    print("\nPercentage:")
     print(df[TARGET_COLUMN].value_counts(normalize=True) * 100)
 
     print(f"\nFeature columns: {df.shape[1] - 1}")

@@ -1,16 +1,17 @@
 """
 Unit tests for API endpoints
 """
+
 import sys
 from pathlib import Path
-
-import pytest
-from fastapi.testclient import TestClient
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from api.main import app
+import pytest  # noqa: E402
+from fastapi.testclient import TestClient  # noqa: E402
+
+from api.main import app  # noqa: E402
 
 client = TestClient(app)
 

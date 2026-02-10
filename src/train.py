@@ -2,10 +2,10 @@
 MLflow-Integrated Training Pipeline for Breast Cancer Detection
 Logs all experiments, metrics, artifacts, and data versions
 """
+
 import argparse
 import hashlib
 import json
-import os
 import shutil
 import sys
 import warnings
@@ -15,8 +15,6 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import mlflow
 import mlflow.sklearn
-import numpy as np
-import pandas as pd
 import seaborn as sns
 from sklearn.metrics import (
     accuracy_score,
@@ -30,13 +28,11 @@ from sklearn.metrics import (
 
 from training_models.train_logistic_regression import create_logistic_regression_model
 from utils.config import (
-    DATASET_PATH,
     LATEST_MODEL_DIR,
     LOGISTIC_REGRESSION_PARAMS,
     MLFLOW_EXPERIMENT_NAME,
     MLFLOW_TRACKING_URI,
     MODEL_PROMOTION_THRESHOLDS,
-    PROJECT_ROOT,
     RANDOM_STATE,
     TEST_SIZE,
 )
@@ -156,10 +152,12 @@ def check_promotion_criteria(cv_scores):
     print("MODEL PROMOTION CRITERIA")
     print("=" * 60)
     print(
-        f"Recall Mean:     {recall_mean:.4f} (threshold: {thresholds['min_recall']:.2f}) {'✓' if meets_recall else '✗'}"
+        f"Recall Mean:     {recall_mean:.4f} (threshold: "
+        f"{thresholds['min_recall']:.2f}) {'✓' if meets_recall else '✗'}"
     )
     print(
-        f"Recall Std Dev:  {recall_std:.4f} (threshold: {thresholds['max_recall_std']:.2f}) {'✓' if meets_stability else '✗'}"
+        f"Recall Std Dev:  {recall_std:.4f} (threshold: "
+        f"{thresholds['max_recall_std']:.2f}) {'✓' if meets_stability else '✗'}"
     )
     print(f"\nPromotion Status: {'APPROVED' if (meets_recall and meets_stability) else 'REJECTED'}")
     print("=" * 60)
@@ -186,7 +184,6 @@ def promote_model(run_id, artifacts_dir):
 
     # Download model from MLflow artifact storage
     try:
-        client = mlflow.tracking.MlflowClient()
         model_uri = f"runs:/{run_id}/model"
         target_path = latest_dir / "model"
 
@@ -218,7 +215,7 @@ def promote_model(run_id, artifacts_dir):
     with open(latest_dir / "promotion_metadata.json", "w") as f:
         json.dump(metadata, f, indent=2)
 
-    print(f"\n✓ Model promoted successfully!")
+    print("\n✓ Model promoted successfully!")
     print(f"Location: {latest_dir.absolute()}")
     print("=" * 60)
 
@@ -280,7 +277,7 @@ def train_pipeline(k_folds=10, smoke_test=False):
 
         X_train, X_test, y_train, y_test = split_train_test(X, y)
 
-        print(f"\nDataset split:")
+        print("\nDataset split:")
         print(f"  Training:   {X_train.shape[0]} samples")
         print(f"  Test:       {X_test.shape[0]} samples")
         print(f"  Features:   {X_train.shape[1]}")
@@ -347,7 +344,7 @@ def train_pipeline(k_folds=10, smoke_test=False):
         test_f1 = f1_score(y_test, y_pred)
         test_roc_auc = roc_auc_score(y_test, y_pred_proba)
 
-        print(f"\nTest Set Metrics:")
+        print("\nTest Set Metrics:")
         print(f"  Accuracy:  {test_accuracy:.4f}")
         print(f"  Precision: {test_precision:.4f}")
         print(f"  Recall:    {test_recall:.4f}")
@@ -399,7 +396,7 @@ def train_pipeline(k_folds=10, smoke_test=False):
         print("=" * 60)
 
         mlflow.sklearn.log_model(model, "model")
-        print(f"✓ Model logged to MLflow")
+        print("✓ Model logged to MLflow")
         print(f"   Artifact URI: {mlflow.get_artifact_uri()}")
 
         # Step 8: Check promotion criteria
@@ -426,7 +423,7 @@ def train_pipeline(k_folds=10, smoke_test=False):
         print(f"MLflow Run ID: {run_id}")
         print(f"Experiment: {MLFLOW_EXPERIMENT_NAME}")
         print(f"End Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        print(f"\nView results: mlflow ui")
+        print("\nView results: mlflow ui")
         print("=" * 80)
 
         return run_id, should_promote

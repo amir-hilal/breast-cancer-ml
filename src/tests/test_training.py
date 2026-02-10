@@ -1,17 +1,18 @@
 """
 Unit tests for training pipeline
 """
+
 import sys
 from pathlib import Path
-
-import pytest
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from training_models.train_logistic_regression import create_logistic_regression_model
-from utils.load_data import drop_unnecessary_columns, load_data
-from utils.preprocess import encode_target, split_features_target
+import pytest  # noqa: E402
+
+from training_models.train_logistic_regression import create_logistic_regression_model  # noqa: E402
+from utils.load_data import drop_unnecessary_columns, load_data  # noqa: E402
+from utils.preprocess import encode_target, split_features_target  # noqa: E402
 
 
 def test_load_data():

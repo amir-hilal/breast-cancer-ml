@@ -1,6 +1,7 @@
 """
 Model evaluation functionality
 """
+
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
@@ -46,7 +47,7 @@ def evaluate_model(pipeline, X_test, y_test, model_name):
     print(f"  F1-Score:  {f1:.4f} ({f1*100:.2f}%)")
 
     # Confusion Matrix
-    print(f"\nConfusion Matrix:")
+    print("\nConfusion Matrix:")
     cm = confusion_matrix(y_test, y_pred)
     print(f"  True Negatives (TN):  {cm[0][0]}")
     print(f"  False Positives (FP): {cm[0][1]}")
@@ -54,7 +55,7 @@ def evaluate_model(pipeline, X_test, y_test, model_name):
     print(f"  True Positives (TP):  {cm[1][1]}")
 
     # Classification Report
-    print(f"\nClassification Report:")
+    print("\nClassification Report:")
     print(classification_report(y_test, y_pred, target_names=["Benign (0)", "Malignant (1)"]))
 
     # Return metrics dictionary
