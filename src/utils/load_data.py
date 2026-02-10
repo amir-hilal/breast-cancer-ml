@@ -1,4 +1,4 @@
-"""  
+"""
 Data loading functionality
 """
 import pandas as pd
@@ -18,7 +18,7 @@ def load_data():
     print("=" * 60)
 
     dataset_path = Path(DATASET_PATH)
-    
+
     # Try to load from local path first
     if dataset_path.exists():
         print(f"Loading from: {dataset_path}")
@@ -26,36 +26,36 @@ def load_data():
         print(f"Dataset loaded successfully!")
         print(f"Shape: {df.shape[0]} rows, {df.shape[1]} columns")
         return df
-    
+
     # Dataset not found - attempt to download from Kaggle
     print(f"⚠️  Dataset not found at {dataset_path}")
     print(f"Attempting to download from Kaggle: {KAGGLE_DATASET}")
-    
+
     try:
         import kagglehub
-        
+
         # Download dataset from Kaggle
         download_path = kagglehub.dataset_download(KAGGLE_DATASET)
         print(f"✓ Dataset downloaded to: {download_path}")
-        
+
         # Find CSV file in downloaded directory
         csv_files = list(Path(download_path).glob('*.csv'))
         if not csv_files:
             raise FileNotFoundError(f"No CSV files found in {download_path}")
-        
+
         csv_path = csv_files[0]
         print(f"Using: {csv_path.name}")
-        
+
         df = pd.read_csv(csv_path)
         print(f"Dataset loaded successfully!")
         print(f"Shape: {df.shape[0]} rows, {df.shape[1]} columns")
-        
+
         # Optional: Update config for future runs
         print(f"\n💡 Tip: Update DATASET_PATH in config.py to:")
         print(f"   {csv_path}")
-        
+
         return df
-        
+
     except ImportError:
         raise RuntimeError(
             "\n❌ Dataset not found and 'kagglehub' is not installed.\n"

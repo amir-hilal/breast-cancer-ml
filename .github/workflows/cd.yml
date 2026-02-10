@@ -105,7 +105,7 @@ jobs:
             --service ${{ env.ECS_SERVICE }} \
             --force-new-deployment \
             --region ${{ env.AWS_REGION }}
-          
+
           echo "✓ ECS service updated - new deployment initiated"
 
       - name: Create GitHub Release

@@ -16,7 +16,7 @@ Complete this checklist **before** pushing to GitHub to ensure smooth CI/CD depl
 - [ ] All tests passing (`pytest tests/` or `python run.py test`)
 
 ---
- 
+
 ## ✅ Code Quality
 
 - [ ] Code formatted with `black src/ tests/`
