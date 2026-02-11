@@ -12,7 +12,7 @@ The API loads a trained model from MLflow and provides endpoints for making pred
 
 ### 1. Root Endpoint
 
-**URL:** `/`  
+**URL:** `/`
 **Method:** `GET`
 
 #### Request
@@ -37,7 +37,7 @@ The API loads a trained model from MLflow and provides endpoints for making pred
 
 ### 2. Health Check Endpoint
 
-**URL:** `/health`  
+**URL:** `/health`
 **Method:** `GET`
 
 #### Request
@@ -74,7 +74,7 @@ The API loads a trained model from MLflow and provides endpoints for making pred
 
 ### 3. Prediction Endpoint
 
-**URL:** `/predict`  
+**URL:** `/predict`
 **Method:** `POST`
 
 #### Request
@@ -191,7 +191,7 @@ The API loads a trained model from MLflow and provides endpoints for making pred
 
 ### 4. Model Information Endpoint
 
-**URL:** `/model/info`  
+**URL:** `/model/info`
 **Method:** `GET`
 
 #### Request
