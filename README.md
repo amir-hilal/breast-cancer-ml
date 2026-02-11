@@ -2,6 +2,12 @@
 
 A **production-ready** machine learning project for breast cancer detection with MLflow experiment tracking, automated CI/CD, REST API, and AWS deployment capabilities.
 
+## 🎯 Live Demo
+
+**Try the ML model now:** [https://breast-cancer-detection-ml.netlify.app/](https://breast-cancer-detection-ml.netlify.app/)
+
+A fully functional frontend application that demonstrates the breast cancer detection model in action. Submit diagnostic features to get instant predictions with confidence levels.
+
 ## ✨ Key Features
 
 🎯 **ML Training Pipeline** - Logistic Regression with K-Fold Cross-Validation
